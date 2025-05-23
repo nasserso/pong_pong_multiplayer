@@ -3,6 +3,10 @@ const BALL_COLOR = "red";
 const BALL_SPEED = 3;
 const PAD_SPEED = 2;
 
+// [x] add second pad
+// [ ] add socket
+// [ ] add AI?
+
 function startGame() {
   padLeft = new Pad();
   padRight = new Pad(580);
