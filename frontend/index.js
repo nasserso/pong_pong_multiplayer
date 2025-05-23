@@ -3,6 +3,14 @@ const BALL_COLOR = "red";
 const BALL_SPEED = 3;
 const PAD_SPEED = 2;
 
+const socket = io(
+  "http://localhost:3000", {
+  extraHeaders: {
+    "Access-Control-Allow-Origin": "*"
+  }
+}
+);
+
 // [x] add second pad
 // [ ] add socket
 // [ ] add AI?
@@ -135,6 +143,7 @@ function Pad(x) {
   }
 
   this.move_up = function() {
+    socket.emit("ping");
     this.speedY = -PAD_SPEED;
   }
 
