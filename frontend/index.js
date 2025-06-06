@@ -15,12 +15,23 @@ const socket = io(
 // [ ] add socket
 // [ ] add AI?
 
+let side = "";
+
+socket.on("pad", (side_choice) => side = side_choice);
+
 function startGame() {
   padLeft = new Pad();
   padRight = new Pad(580);
   ball = new Ball();
   gameArea.start();
 }
+
+socket.on("update", (data) => {
+  padLeft.x = data.padLeft.x;
+  padLeft.y = data.padLeft.y;
+  padRight.x = data.padRight.x;
+  padRight.y = data.padRight.y;
+})
 
 var gameArea = {
   canvas: document.createElement("canvas"),
@@ -127,32 +138,17 @@ function Pad(x) {
   this.y = 10;
   this.speedY = 0;
   this.update = function() {
-    if (this.speedY < 0 && this.y > 0) {
-      this.y += this.speedY;
-    }
-    if (
-      this.speedY > 0 &&
-      this.y+100 < gameArea.canvas.height)
-    {
-      this.y += this.speedY;
-    }
-
     ctx = gameArea.context;
     ctx.fillStyle = PAD_COLOR;
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
   this.move_up = function() {
-    socket.emit("ping");
-    this.speedY = -PAD_SPEED;
+    socket.emit("up-" + side, null);
   }
 
   this.move_down = function() {
-    this.speedY = PAD_SPEED;
-  }
-
-  this.stop_move = function() {
-    this.speedY = 0;
+    socket.emit("down-" + side, null);
   }
 }
 
@@ -161,16 +157,19 @@ function updateGameArea() {
   gameArea.clear();
 
   gameArea.collision();
-  padLeft.stop_move();
-  padRight.stop_move();
+
   if (gameArea.key) {
     if (gameArea.key === "ArrowUp") {
-      padLeft.move_up();
-      padRight.move_up();
+      if (side == "left")
+        padLeft.move_up();
+      else
+        padRight.move_up();
     }
     if (gameArea.key == "ArrowDown") {
-      padLeft.move_down();
-      padRight.move_down();
+      if (side == "left")
+        padLeft.move_down();
+      else
+        padRight.move_down();
     }
   }
   ball.update();
