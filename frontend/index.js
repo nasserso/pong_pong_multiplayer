@@ -5,14 +5,16 @@ const PAD_SPEED = 2;
 
 const socket = io(
   "http://localhost:3000", {
-  extraHeaders: {
-    "Access-Control-Allow-Origin": "*"
+    extraHeaders: {
+      "Access-Control-Allow-Origin": "*"
+    }
   }
-}
 );
 
 // [x] add second pad
-// [ ] add socket
+// [x] add socket
+//    [ ] anti lag
+//    [ ] better collision
 // [ ] add AI?
 
 let side = "";
@@ -31,6 +33,8 @@ socket.on("update", (data) => {
   padLeft.y = data.padLeft.y;
   padRight.x = data.padRight.x;
   padRight.y = data.padRight.y;
+  ball.x = data.ball?.x;
+  ball.y = data.ball?.y;
 })
 
 var gameArea = {
@@ -69,23 +73,6 @@ var gameArea = {
   clear: function() {
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
   },
-  has_collision: function(pad, ball, side) {
-    const is_ball_pad_same_height = () => pad.y <= ball.y && ball.y <= pad.y+pad.height;
-
-    // FIXME: bug if speed if too high the collison happens before touch the pad
-    if (side === "right") {
-      return ball.x + ball.width + ball.speedX >= pad.x && is_ball_pad_same_height();
-    }
-    return ball.x + ball.speedX <= pad.x+pad.width && is_ball_pad_same_height();
-  },
-  collision: function() {
-    if (this.has_collision(padLeft, ball, "left")) {
-      ball.collision(padLeft.speedY);
-    }
-    if (this.has_collision(padRight, ball, "right")) {
-      ball.collision(padRight.speedY);
-    }
-  }
 }
 
 function Ball(x, y) {
@@ -96,35 +83,7 @@ function Ball(x, y) {
   this.speedX = BALL_SPEED;
   this.speedY = 0;
 
-  this.collision = function(speedY) {
-    this.speedX *= -1;
-    if (speedY === 0) {
-      // do nothing
-      this.speedY *= 1;
-    } else if (speedY > 0) {
-      this.speedY = BALL_SPEED * Math.random();
-    } else {
-      this.speedY = -BALL_SPEED * Math.random();
-    };
-  }
-
   this.update = function() {
-    if (this.x + this.width >= gameArea.canvas.width) {
-      this.speedX = -BALL_SPEED;
-    }
-    else if (this.x <= 0) {
-      this.speedX = BALL_SPEED;
-    }
-    else if (this.y + this.height >= gameArea.canvas.height) {
-      this.speedY = -BALL_SPEED;
-    }
-    else if (this.y <= 0) {
-      this.speedY = BALL_SPEED;
-    }
-    
-    this.y += this.speedY;
-    this.x += this.speedX;
-
     ctx = gameArea.context;
     ctx.fillStyle = BALL_COLOR;
     ctx.fillRect(this.x, this.y, this.width, this.height);
@@ -155,8 +114,6 @@ function Pad(x) {
 function updateGameArea() {
   gameArea.frame += 1;
   gameArea.clear();
-
-  gameArea.collision();
 
   if (gameArea.key) {
     if (gameArea.key === "ArrowUp") {

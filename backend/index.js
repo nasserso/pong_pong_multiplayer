@@ -11,10 +11,17 @@ const io = new Server(server, {cors: {origin: '*'}});
 
 const game = new GameArea();
 
+setInterval(() =>{
+  game.ball.update();
+  game.collision();
+  updateEmit();
+}, 50);
+
 function updateEmit() {
   io.emit("update", {
-    padLeft: { x: game.padLeft.x, y: game.padLeft.y }, 
-    padRight: { x: game.padRight?.x || 0, y: game.padRight?.y || 0 }, 
+    padLeft: { x: game.padLeft?.x || 10, y: game.padLeft?.y || 10 }, 
+    padRight: { x: game.padRight?.x || 580, y: game.padRight?.y || 10 }, 
+    ball: { x: game.ball?.x || 300, y: game.ball?.y || 300 }, 
   });
 }
 
@@ -25,19 +32,19 @@ io.on('connection', (socket) => {
 
   socket.on('up-left', () => {
     game.moveLeftUp()
-    updateEmit(socket);
+    // updateEmit(socket);
   });
   socket.on('down-left', () => {
     game.moveLeftDown();
-    updateEmit(socket);    
+    // updateEmit(socket);    
   });
   socket.on('up-right', () => {
     game.moveRightUp();
-    updateEmit(socket);    
+    // updateEmit(socket);    
   });
   socket.on('down-right', () => {
     game.moveRightDown();
-    updateEmit(socket);    
+    // updateEmit(socket);    
   });
 
   socket.on('disconnect', () => {
