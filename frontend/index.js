@@ -2,6 +2,8 @@ const PAD_COLOR = "white";
 const BALL_COLOR = "red";
 const BALL_SPEED = 3;
 const PAD_SPEED = 2;
+const INTERPOLATION = false;
+const HERTZ = 1000/40;
 
 const socket = io(
   "http://localhost:3000", {
@@ -28,13 +30,24 @@ function startGame() {
   gameArea.start();
 }
 
+const lerp = (start, end, ratio) => start + ((end - start) * ratio);
+
 socket.on("update", (data) => {
-  padLeft.x = data.padLeft.x;
-  padLeft.y = data.padLeft.y;
-  padRight.x = data.padRight.x;
-  padRight.y = data.padRight.y;
-  ball.x = data.ball?.x;
-  ball.y = data.ball?.y;
+  if (INTERPOLATION) {
+    padLeft.x_next = data.padLeft.x;
+    padLeft.y_next = data.padLeft.y;
+    padRight.x_next = data.padRight.x;
+    padRight.y_next = data.padRight.y;
+    ball.x_next = data.ball.x;
+    ball.y_next = data.ball.y;
+  } else {
+    padLeft.x = data.padLeft.x;
+    padLeft.y = data.padLeft.y;
+    padRight.x = data.padRight.x;
+    padRight.y = data.padRight.y;
+    ball.x = data.ball?.x;
+    ball.y = data.ball?.y;
+  }
 })
 
 var gameArea = {
@@ -47,7 +60,7 @@ var gameArea = {
     // border
     this.canvas.style.border = "1px solid";
     document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-    this.interval = setInterval(updateGameArea, 20);
+    this.interval = setInterval(updateGameArea, HERTZ);
 
     // TODO: mobile
     // window.addEventListener('mousedown', function (e) {
@@ -82,6 +95,9 @@ function Ball(x, y) {
   this.y = y || 300;
   this.speedX = BALL_SPEED;
   this.speedY = 0;
+  this.position_buffer = [];
+  this.x_next = 0;
+  this.y_next = 0;
 
   this.update = function() {
     ctx = gameArea.context;
@@ -96,9 +112,17 @@ function Pad(x) {
   this.x = x || 10;
   this.y = 10;
   this.speedY = 0;
+  this.position_buffer = [];
+  this.x_next = 0;
+  this.y_next = 0;
+
   this.update = function() {
     ctx = gameArea.context;
     ctx.fillStyle = PAD_COLOR;
+    if (INTERPOLATION) {
+      this.x = lerp(this.x, this.x_next, 0.1);
+      this.y = lerp(this.y, this.y_next, 0.1);
+    }
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
