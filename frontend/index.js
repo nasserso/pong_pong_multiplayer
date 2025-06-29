@@ -2,7 +2,7 @@ const PAD_COLOR = "white";
 const BALL_COLOR = "red";
 const BALL_SPEED = 3;
 const PAD_SPEED = 2;
-const INTERPOLATION = false;
+const INTERPOLATION = true;
 const HERTZ = 1000/40;
 
 const socket = io(
@@ -15,7 +15,7 @@ const socket = io(
 
 // [x] add second pad
 // [x] add socket
-//    [ ] anti lag
+//    [x] anti lag
 //    [ ] better collision
 // [ ] add AI?
 
@@ -38,8 +38,11 @@ socket.on("update", (data) => {
     padLeft.y_next = data.padLeft.y;
     padRight.x_next = data.padRight.x;
     padRight.y_next = data.padRight.y;
-    ball.x_next = data.ball.x;
-    ball.y_next = data.ball.y;
+    // TODO: add ball interpoltion
+    // ball.x_next = data.ball.x;
+    // ball.y_next = data.ball.y;
+    ball.x = data.ball?.x;
+    ball.y = data.ball?.y;
   } else {
     padLeft.x = data.padLeft.x;
     padLeft.y = data.padLeft.y;
@@ -102,6 +105,10 @@ function Ball(x, y) {
   this.update = function() {
     ctx = gameArea.context;
     ctx.fillStyle = BALL_COLOR;
+    // if (INTERPOLATION) {
+    //   this.x = lerp(this.x, this.x_next, 0.1);
+    //   this.y = lerp(this.y, this.y_next, 0.1);
+    // }
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }
@@ -119,10 +126,10 @@ function Pad(x) {
   this.update = function() {
     ctx = gameArea.context;
     ctx.fillStyle = PAD_COLOR;
-    if (INTERPOLATION) {
-      this.x = lerp(this.x, this.x_next, 0.1);
-      this.y = lerp(this.y, this.y_next, 0.1);
-    }
+    // if (INTERPOLATION) {
+    //   this.x = lerp(this.x, this.x_next, 0.1);
+    //   this.y = lerp(this.y, this.y_next, 0.1);
+    // }
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
