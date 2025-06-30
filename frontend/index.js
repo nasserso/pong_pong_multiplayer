@@ -126,10 +126,18 @@ function Pad(x) {
   this.update = function() {
     ctx = gameArea.context;
     ctx.fillStyle = PAD_COLOR;
-    // if (INTERPOLATION) {
-    //   this.x = lerp(this.x, this.x_next, 0.1);
-    //   this.y = lerp(this.y, this.y_next, 0.1);
-    // }
+    if (INTERPOLATION) {
+      if (this.x_next - this.x <= 0.001) {
+        this.x = this.x_next;
+      } else {
+        this.x = lerp(this.x, this.x_next, 0.1);
+      }
+      if (this.y_next - this.y <= 0.001) {
+        this.y = this.y_next;
+      } else {
+        this.y = lerp(this.y, this.y_next, 0.1);
+      }
+    }
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 
