@@ -1,0 +1,15 @@
+services:
+  frontend:
+    container_name: ${FRONTEND_HOST}
+    build:
+        context: .
+        dockerfile: Dockerfile.frontend.dev
+    ports:
+        - ${FRONTEND_PORT}:${FRONTEND_PORT}
+  backend:
+    container_name: ${BACKEND_HOST}
+    build:
+        context: .
+        dockerfile: Dockerfile.backend.dev
+    ports:
+        - ${BACKEND_PORT}:${BACKEND_PORT}
