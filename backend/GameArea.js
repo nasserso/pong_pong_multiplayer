@@ -47,18 +47,9 @@ module.exports = class GameArea {
     }
 
     has_collision(pad, ball, side) {
-        const has_collision_on_y = (
-            pad,
-            ball
-        ) => pad.y <= ball.y && ball.y <= pad.y+pad.height;
-        const has_collision_on_x_left = (
-            pad,
-            ball
-        ) => ball.x + ball.speedX <= pad.x+pad.width;
-        const has_collision_on_x_right = (
-            pad,
-            ball
-        ) => ball.x + ball.width + ball.speedX >= pad.x;
+        const has_collision_on_y = (pad, ball) => (pad.y <= ball.y && ball.y <= pad.y+pad.height);
+        const has_collision_on_x_left = (pad, ball) => (ball.x + ball.speedX <= pad.x+pad.width);
+        const has_collision_on_x_right = (pad, ball) => (ball.x + ball.width + ball.speedX >= pad.x);
 
         // FIXME: bug if speed if too high the collison happens before touching the pad
         if (side === "right") {

@@ -18,11 +18,22 @@ setInterval(() =>{
   updateEmit();
 }, SERVER_TICK);
 
+const isNumber = (value) => typeof value === "number";
+
 function updateEmit() {
   io.emit("update", {
-    padLeft: { x: game.padLeft?.x || 10, y: game.padLeft?.y || 10 }, 
-    padRight: { x: game.padRight?.x || 580, y: game.padRight?.y || 10 }, 
-    ball: { x: game.ball?.x || 300, y: game.ball?.y || 300 }, 
+    padLeft: {
+      x: isNumber(game.padLeft?.x) ? game.padLeft?.x : 10,
+      y: isNumber(game.padLeft?.y) ? game.padLeft?.y : 10
+    }, 
+    padRight: {
+      x: isNumber(game.padRight?.x) ? game.padRight?.x : 580,
+      y: isNumber(game.padRight?.y) ? game.padRight?.y : 10
+    }, 
+    ball: {
+      x: isNumber(game.ball?.x) ? game.ball?.x : 300,
+      y: isNumber(game.ball?.x) ? game.ball?.y : 300
+    },
   });
 }
 

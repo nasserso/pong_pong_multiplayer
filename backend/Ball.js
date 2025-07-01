@@ -31,13 +31,13 @@ module.exports = class Ball {
     if (this.x + this.width >= this.areaWidth) {
       this.speedX = -BALL_SPEED;
     }
-    else if (this.x <= 0) {
+    if (this.x <= 0) {
       this.speedX = BALL_SPEED;
     }
-    else if (this.y + this.height >= this.areaHeight) {
+    if (this.y + this.height >= this.areaHeight) {
       this.speedY = -BALL_SPEED;
     }
-    else if (this.y <= 0) {
+    if (this.y <= 0) {
       this.speedY = BALL_SPEED;
     }
 
