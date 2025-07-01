@@ -10,7 +10,7 @@ const server = createServer(app);
 const io = new Server(server, {cors: {origin: '*'}});
 
 const game = new GameArea();
-const SERVER_TICK = 50; // TODO: choose difficult
+const SERVER_TICK = 40;
 
 setInterval(() =>{
   game.ball.update();

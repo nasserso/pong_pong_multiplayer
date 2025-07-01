@@ -41,8 +41,8 @@ socket.on("update", (data) => {
     // TODO: add ball interpoltion
     // ball.x_next = data.ball.x;
     // ball.y_next = data.ball.y;
-    ball.x = data.ball?.x;
-    ball.y = data.ball?.y;
+    ball.x_next = data.ball?.x;
+    ball.y_next = data.ball?.y;
   } else {
     padLeft.x = data.padLeft.x;
     padLeft.y = data.padLeft.y;
@@ -105,10 +105,18 @@ function Ball(x, y) {
   this.update = function() {
     ctx = gameArea.context;
     ctx.fillStyle = BALL_COLOR;
-    // if (INTERPOLATION) {
-    //   this.x = lerp(this.x, this.x_next, 0.1);
-    //   this.y = lerp(this.y, this.y_next, 0.1);
-    // }
+    if (INTERPOLATION) {
+      if (this.x_next - this.x <= 0.001) {
+        this.x = this.x_next;
+      } else {
+        this.x = lerp(this.x, this.x_next, 0.2);
+      }
+      if (this.y_next - this.y <= 0.001) {
+        this.y = this.y_next;
+      } else {
+        this.y = lerp(this.y, this.y_next, 0.2);
+      }
+    }
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }
@@ -130,12 +138,12 @@ function Pad(x) {
       if (this.x_next - this.x <= 0.001) {
         this.x = this.x_next;
       } else {
-        this.x = lerp(this.x, this.x_next, 0.1);
+        this.x = lerp(this.x, this.x_next, 0.2);
       }
       if (this.y_next - this.y <= 0.001) {
         this.y = this.y_next;
       } else {
-        this.y = lerp(this.y, this.y_next, 0.1);
+        this.y = lerp(this.y, this.y_next, 0.2);
       }
     }
     ctx.fillRect(this.x, this.y, this.width, this.height);
