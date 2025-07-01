@@ -33,24 +33,12 @@ function startGame() {
 const lerp = (start, end, ratio) => start + ((end - start) * ratio);
 
 socket.on("update", (data) => {
-  if (INTERPOLATION) {
-    padLeft.x_next = data.padLeft.x;
-    padLeft.y_next = data.padLeft.y;
-    padRight.x_next = data.padRight.x;
-    padRight.y_next = data.padRight.y;
-    // TODO: add ball interpoltion
-    // ball.x_next = data.ball.x;
-    // ball.y_next = data.ball.y;
-    ball.x_next = data.ball?.x;
-    ball.y_next = data.ball?.y;
-  } else {
-    padLeft.x = data.padLeft.x;
-    padLeft.y = data.padLeft.y;
-    padRight.x = data.padRight.x;
-    padRight.y = data.padRight.y;
-    ball.x = data.ball?.x;
-    ball.y = data.ball?.y;
-  }
+  padLeft.x_next = data.padLeft.x;
+  padLeft.y_next = data.padLeft.y;
+  padRight.x_next = data.padRight.x;
+  padRight.y_next = data.padRight.y;
+  ball.x_next = data.ball?.x;
+  ball.y_next = data.ball?.y;
 })
 
 var gameArea = {
@@ -116,7 +104,11 @@ function Ball(x, y) {
       } else {
         this.y = lerp(this.y, this.y_next, 0.2);
       }
+    } else {
+      this.x = this.x_next;
+      this.y = this.y_next;
     }
+
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }
@@ -145,6 +137,9 @@ function Pad(x) {
       } else {
         this.y = lerp(this.y, this.y_next, 0.2);
       }
+    } else {
+      this.x = this.x_next;
+      this.y = this.y_next;
     }
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
