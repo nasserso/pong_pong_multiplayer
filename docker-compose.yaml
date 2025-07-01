@@ -6,6 +6,11 @@ services:
         dockerfile: Dockerfile.frontend.dev
     ports:
         - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /frontend
   backend:
     container_name: ${BACKEND_HOST}
     build:
@@ -13,3 +18,8 @@ services:
         dockerfile: Dockerfile.backend.dev
     ports:
         - ${BACKEND_PORT}:${BACKEND_PORT}
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /backend
