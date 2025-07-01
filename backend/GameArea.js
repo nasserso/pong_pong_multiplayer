@@ -14,12 +14,21 @@ module.exports = class GameArea {
     addPad() {
         if (!this.padLeft) {
             this.padLeft = new Pad();
-            return "left";
-        } else if (!this.padRight) {
-            this.padRight = new Pad(580);
-            return "right";
+            return ["left", this.padLeft];
         }
-        return "full";
+        if (!this.padRight) {
+            this.padRight = new Pad(580);
+            return ["right", this.padRight];
+        }
+        return ["full", null];
+    }
+
+    removePad(pad) {
+        if (pad === this.padRight) {
+            this.padRight = null;
+        } else if (pad === this.padLeft) {
+            this.padLeft = null;
+        }
     }
 
     startBall(x, y, areaWidth, areaHeight) {

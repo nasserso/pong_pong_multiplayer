@@ -18,6 +18,8 @@ setInterval(() =>{
   updateEmit();
 }, SERVER_TICK);
 
+const userPad = {};
+
 const isNumber = (value) => typeof value === "number";
 
 function updateEmit() {
@@ -40,7 +42,8 @@ function updateEmit() {
 io.on('connection', (socket) => {
   console.log('a user connected');
   const side = game.addPad();
-  socket.emit("pad", side);
+  userPad[socket.id] = side[1];
+  socket.emit("pad", side[0]);
 
   socket.on('up-left', () => {
     game.moveLeftUp()
@@ -60,7 +63,8 @@ io.on('connection', (socket) => {
   });
 
   socket.on('disconnect', () => {
-    // TODO: remove pad
+    game.removePad(userPad[socket.id]);
+    delete userPad[socket.id];
     console.log('user disconnected');
   });
 });

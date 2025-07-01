@@ -3,7 +3,7 @@ const BALL_COLOR = "red";
 const BALL_SPEED = 3;
 const PAD_SPEED = 2;
 const INTERPOLATION = true;
-const HERTZ = 1000/40;
+const HERTZ = 1000/60;
 
 const socket = io(
   "http://localhost:3000", {
@@ -16,8 +16,9 @@ const socket = io(
 // [x] add second pad
 // [x] add socket
 //    [x] anti lag
-//    [ ] better collision
+//    [x] better collision
 // [ ] add AI?
+// [ ] rooms
 
 let side = "";
 
@@ -94,12 +95,12 @@ function Ball(x, y) {
     ctx = gameArea.context;
     ctx.fillStyle = BALL_COLOR;
     if (INTERPOLATION) {
-      if (this.x_next - this.x <= 0.001) {
+      if (this.x_next - this.x <= 0.01) {
         this.x = this.x_next;
       } else {
         this.x = lerp(this.x, this.x_next, 0.2);
       }
-      if (this.y_next - this.y <= 0.001) {
+      if (this.y_next - this.y <= 0.01) {
         this.y = this.y_next;
       } else {
         this.y = lerp(this.y, this.y_next, 0.2);
