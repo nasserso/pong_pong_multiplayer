@@ -4,4 +4,4 @@ COPY package*.json ./
 RUN npm install
 EXPOSE 8080
 COPY . .
-CMD ["npx", "http-server", "./frontend", "-c-1", "--cors='*'"]
+CMD ["npx", "http-server", "./frontend", "-c-1", "--cors='*'", "-P http://localhost:8080?"]
