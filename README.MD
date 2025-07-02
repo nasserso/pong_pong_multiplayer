@@ -1,6 +1,6 @@
 # Multiplayer Socket Ping-Pong
 
-Basic multiplayer ping pong game using sockets and linear interpolation
+Basic multiplayer ping pong game using sockets 🔌 and linear interpolation (lerp) 📏
 
 ![til](https://raw.githubusercontent.com/nasserso/pong_pong_multiplayer/master/assets/images/ping_pong.gif)
 
